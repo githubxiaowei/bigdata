@@ -54,9 +54,9 @@ public class TryRedis {
 			csvReader.setDelimiter(' ');
 			Integer rawID = 0;
 			Integer columnNum = 3;
-			while (csvReader.readRecord() && rawID < 100000) {
-				++rawID;
+			while (csvReader.readRecord() && rawID < 100000) {			
 				if (csvReader.getColumnCount() == columnNum) {
+					++rawID;
 					String key_name = "ID_" + rawID.toString();
 					jedis.hset("S", key_name, csvReader.get(0));
 					jedis.hset("P", key_name, csvReader.get(1));
