@@ -6,19 +6,6 @@
 //给定一个oi, 给出拥有这样oi最多的S 
 //试比较三种数据库下的运行效率。并尝试提高性能的可能方法，例如建立索引等。
 
-//条件查询与SQL类似。形式为
-//
-//等于：      {<key>:<value>}  
-//小于：      {<key>:{$lt:<value>}}
-//小于等于：  {<key>:{$lte:<value>}}
-//大于：      {<key>:{$gt:<value>}}
-//大于等于：  {<key>:{$gte:<value>}}
-//不等于：    {<key>:{$ne:<value>}}
-//多条件查询命令：
-//
-//AND:    db.student.find({key1:value1, key2:value2}).pretty()
-//OR:     db.student.find({$or: [{key1: value1}, {key2:value2}]}).pretty()
-//同时：  db.student.find({key1: value1, $or: [{key2:value2},{key3:value3}]}).pretty()
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +29,6 @@ import com.mongodb.client.model.Filters;
 
 import com.csvreader.CsvReader;
 
-
 public class TryMongodb {
 	private MongoClient mongoClient;
 	private MongoDatabase mongoDatabase;
@@ -64,8 +50,9 @@ public class TryMongodb {
 	public void close() {
 		mongoClient.close();
 	}
-
-	@Test
+	
+	// 用时 46s
+	// @Test
 	public void TestInsert() {
 		if (collection != null) {
 			collection.drop();
@@ -101,7 +88,8 @@ public class TryMongodb {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 		}
 	}
-
+	
+	// 用时 0.439s
 	@Test
 	public void TestSelectS() {
 		ArrayList<List<String>> result = select(0, "Alfredo_Covelli");
@@ -109,7 +97,8 @@ public class TryMongodb {
 			System.out.println(iterator);
 		}
 	}
-
+	
+	// 用时 0.785s
 	@Test
 	public void TestSelectO() {
 
@@ -118,7 +107,8 @@ public class TryMongodb {
 			System.out.println(iterator);
 		}
 	}
-
+	
+	// 用时 7.283s
 	@Test
 	public void TestSelectPP() {
 
@@ -127,18 +117,26 @@ public class TryMongodb {
 		ArrayList<List<String>> result1 = select(1, p1);
 		ArrayList<List<String>> result2 = select(1, p2);
 
+		HashSet<String> O1 = new HashSet<String>();
+		for (List<String> iterator : result1) {
+			if (iterator.get(0).equals(iterator.get(0)))
+				O1.add(iterator.get(0));
+		}
+		HashSet<String> O2 = new HashSet<String>();
+		for (List<String> iterator : result2) {
+			if (iterator.get(0).equals(iterator.get(0)))
+				O2.add(iterator.get(0));
+		}
 		HashSet<String> commonO = new HashSet<String>();
-		for (List<String> iterator1 : result1) {
-			for (List<String> iterator2 : result2) {
-				if (iterator1.get(0).equals(iterator2.get(0)))
-					commonO.add(iterator1.get(0));
+		for (String o : O1) {
+			if(O2.contains(o)) {
+				commonO.add(o);
+				System.out.println(o);
 			}
 		}
-		for (String o : commonO) {
-			System.out.println(o);
-		}
 	}
-
+	
+	// 用时 0.456s
 	@Test
 	public void TestHasMostO() {
 
