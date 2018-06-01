@@ -1,3 +1,4 @@
+**Product.java
 1. add matrixA.txt  into graph_input/m1
 2. add matrixB.txt  into graph_input/m2
 3. matrix\*.txt is like:
